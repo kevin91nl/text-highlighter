@@ -20,7 +20,7 @@ streamlit run example.py
 
 The output will look like this:
 
-[Example](img/example.png)
+![Example](img/example.png)
 
 ## Contribute
 
