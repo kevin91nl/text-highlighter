@@ -7,12 +7,27 @@ A Streamlit component for annotating text using text highlighting. Useful for NL
 You can install the Text Highlighter package using the following command:
 
 ```bash
-pip install text_highlighter
+pip install --upgrade text-highlighter
 ```
 
 ## Usage
 
-In `example.py` you can find an example of how to use this repository. You can run the example by running the following command:
+The package can be used as follows:
+
+```python
+from text_highlighter import text_highlighter
+import streamlit as st
+
+# Basic usage
+result = text_highlighter(
+    text="Cats and dogs in the Netherlands are awesome!", labels=["ANIMAL", "LOCATION"]
+)
+
+# Show the results
+st.write(result)
+```
+
+In the `example.py` script you can find the above example. You can run the example as follows:
 
 ```bash
 streamlit run example.py
