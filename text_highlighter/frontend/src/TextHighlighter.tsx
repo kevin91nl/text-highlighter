@@ -86,7 +86,36 @@ class MyComponent extends StreamlitComponentBase<BaseState> {
     )
   }
 
+  private mergeAnnotations = (annotations: any[]) => {
+    // Remove all annotations which are a subannotation of another annotation;
+    // which means that annotation2.start >= annotation1.start and annotation2.end <= annotation1.end
+    for (const annotation1 of annotations) {
+      var isOverlapping = false;
+      let otherAnnotation = null;
+      for (const annotation2 of annotations) {
+        if (annotation1.start === annotation2.start && annotation1.end === annotation2.end) continue;
+        if ((annotation2.start <= annotation1.start && annotation2.end >= annotation1.start) || (annotation2.start <= annotation1.end && annotation2.end >= annotation1.end)) {
+          isOverlapping = true;
+          otherAnnotation = annotation2;
+          break;
+        }
+      }
+      if (isOverlapping) {
+        const newAnnotations = [];
+        for (const annotation3 of annotations) {
+          if (annotation3.start !== annotation1.start && annotation3.end !== annotation1.end && annotation3.start !== otherAnnotation.start && annotation3.end !== otherAnnotation.end) {
+            newAnnotations.push(annotation3);
+          }
+        }
+        // Deselect both annotation1 and otherannotation
+        return newAnnotations;
+      }
+    }
+    return annotations;
+  }
+
   private updateState = (value: any, callback: any): void => {
+    value = this.mergeAnnotations(value);
     callback({ value });
     Streamlit.setComponentValue(value);
   }
