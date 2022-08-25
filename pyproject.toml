@@ -1,0 +1,116 @@
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | blib2to3
+  | tests/data
+  | profiling
+)/
+'''
+# We use preview style for formatting Black itself. If you
+# want stable formatting across releases, you should keep
+# this off.
+preview = false
+
+# Build system information below.
+# NOTE: You don't need this in your own Black configuration.
+
+[build-system]
+requires = ["setuptools>=45.0", "setuptools_scm[toml]>=6.3.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+# Option below requires `tests/optional.py`
+markers = [
+  "incompatible_with_mypyc: run when testing mypyc compiled black"
+]
+
+[tool.mypy]
+python_version = 3.8
+exclude = ["notebooks"]
+ignore_missing_imports = true
+disable_error_code = ["return-value", "return"]
+show_error_codes = true
+
+[tool.pyright]
+pythonVersion = "3.8"
+pythonPlatform = "Linux"
+exclude = ["notebooks"]
+executionEnvironments = [
+  {"root" = "src", "pythonVersion" = "3.8"}
+]
+typeCheckingMode = "strict"
+reportMissingImports = true
+reportMissingTypeStubs = false
+reportOptionalImports = true
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
+strictParameterNoneValue = true
+reportGeneralTypeIssues = true
+reportPropertyTypeMismatch = true
+reportFunctionMemberAcces = true
+reportMissingImport = true
+reportMissingModuleSource = true
+reportImportCycles = true
+reportUnusedImport = true
+reportUnusedClass = true
+reportUnusedFunction = true
+reportUnusedVariable = true
+reportDuplicateImport = true
+reportWildcardImportFromLibrary = true
+reportOptionalSubscript = true
+reportOptionalMemberAccess = true
+reportOptionalCall = true
+reportOptionalIterable = true
+reportOptionalContextManager = true
+reportOptionalOperand = true
+reportTypedDictNotRequiredAccess = true
+reportUntypedFunctionDecorator = true
+reportUntypedClassDecorator = true
+reportUntypedBaseClass = true
+reportUntypedNamedTuple = true
+reportPrivateUsage = true
+reportTypeCommentUsage = true
+reportPrivateImportUsage = true
+reportConstantRedefinition = true
+reportIncompatibleMethodOverride = true
+reportIncompatibleVariableOverride = true
+reportInconsistentConstructor = true
+reportOverlappingOverload = true
+reportMissingSuperCall = true
+reportUninitializedInstanceVariable = false # Not possible due to Pydantic
+reportInvalidStringEscapeSequence = true
+reportUnknownParameterType = true
+reportUnknownArgumentType = false # Not possible due to Pydantic
+reportUnknownLambdaType = true
+reportUnknownVariableType = false # Overkill
+reportUnknownMemberType = false # Not possible due to dynamic classes
+reportMissingParameterType = true
+reportMissingTypeArgument = true
+reportInvalidTypeVarUse = true
+reportCallInDefaultInitializer = false  # Mutable arguments are needed for Streamlit
+reportUnnecessaryIsInstance = true
+reportUnnecessaryCast = true
+reportUnnecessaryComparison = true
+reportUnnecessaryContains = true
+reportAssertAlwaysTrue = true
+reportSelfClsParameterName = true
+reportImplicitStringConcatenation = false  # Overkill
+reportUndefinedVariable = true
+reportUnboundVariable = true
+reportInvalidStubStatemen = true
+reportIncompleteStub = true
+reportUnsupportedDunderAll = true
+reportUnusedCallResult = false # Overkill
+reportUnusedCoroutine = true
+reportUnusedExpression = true
+reportUnnecessaryTypeIgnoreComment = false
+reportMatchNotExhaustive = true
+
+[tool.vulture]
+min_confidence = 80
+paths = ["text_highlighter"]

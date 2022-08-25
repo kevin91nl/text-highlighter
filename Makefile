@@ -1,3 +1,7 @@
+check:
+	black --check .
+	vulture
+	pyright
 run_frontend:
 	cd text_highlighter/frontend && npm run start
 run_backend:
