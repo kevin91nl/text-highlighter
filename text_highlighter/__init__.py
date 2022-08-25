@@ -1,11 +1,12 @@
 import os
 import streamlit.components.v1 as components
+from typing import List, Dict, Any, Optional, Union
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
 # the component, and True when we're ready to package and distribute it.
 # (This is, of course, optional - there are innumerable ways to manage your
 # release process.)
-_RELEASE = str(os.environ.get('RELEASE', True)).lower() in ['true', '1']
+_RELEASE = str(os.environ.get("RELEASE", True)).lower() in ["true", "1"]
 
 # Declare a Streamlit component. `declare_component` returns a function
 # that is used to create instances of the component. We're naming this
@@ -43,7 +44,15 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def text_highlighter(text='Hello world!', selected_label=None, annotations=[], labels=['PERSON', 'ORG'], colors=None, key=None, show_label_selector=True):
+def text_highlighter(
+    text: str = "Hello world!",
+    selected_label: Optional[str] = None,
+    annotations: List[Dict[str, Any]] = [],
+    labels: Union[str, List[str]] = ["PERSON", "ORG"],
+    colors: Optional[List[str]] = None,
+    key: Optional[str] = None,
+    show_label_selector: bool = True,
+):
     """Create a new instance of "text_highlighter".
 
     Parameters
@@ -64,14 +73,23 @@ def text_highlighter(text='Hello world!', selected_label=None, annotations=[], l
         frontend.)
 
     """
-    if type(labels) == str:
-        labels = [labels]
+    labels = [labels] if isinstance(labels, str) else labels
     if selected_label is None:
         selected_label = labels[0]
     if colors is not None:
         assert len(colors) == len(labels), "Colors and labels must be the same length"
     else:
-        all_colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'pink', 'cyan', 'gray']
+        all_colors = [
+            "red",
+            "green",
+            "blue",
+            "yellow",
+            "orange",
+            "purple",
+            "pink",
+            "cyan",
+            "gray",
+        ]
         colors = [all_colors[i % len(all_colors)] for i in range(len(labels))]
     # Call through to our private component function. Arguments we pass here
     # will be sent to the frontend, where they'll be available in an "args"
@@ -79,7 +97,16 @@ def text_highlighter(text='Hello world!', selected_label=None, annotations=[], l
     #
     # "default" is a special argument that specifies the initial return
     # value of the component before the user has interacted with it.
-    component_value = _component_func(text=text, annotations=annotations, colors=colors, labels=labels, key=key, default=annotations, selected_label=selected_label, show_label_selector=show_label_selector)
+    component_value = _component_func(
+        text=text,
+        annotations=annotations,
+        colors=colors,
+        labels=labels,
+        key=key,
+        default=annotations,
+        selected_label=selected_label,
+        show_label_selector=show_label_selector,
+    )
 
     # We could modify the value returned from the component if we wanted.
     # There's no need to do this in our simple example - but it's an option.
@@ -97,15 +124,13 @@ if not _RELEASE:
     # Create an instance of our component with a constant `name` arg, and
     # print its output value.
     annotations = [
-        {
-            "start": 0,
-            "end": 5,
-            "text": "Hello",
-            "tag": "ORG",
-            "color": "red"
-        }
+        {"start": 0, "end": 5, "text": "Hello", "tag": "ORG", "color": "red"}
     ]
-    label = st.selectbox('Select a label', ['PERSON', 'ORG'])
-    annotations = text_highlighter(text='Hello world! This is a demo. Second line', annotations=annotations, selected_label=label, show_label_selector=False)
+    label = st.selectbox("Select a label", ["PERSON", "ORG"])  # type: ignore
+    annotations = text_highlighter(
+        text="Hello world! This is a demo. Second line",
+        annotations=annotations,
+        selected_label=label,
+        show_label_selector=False,
+    )
     st.write(annotations)
-    
