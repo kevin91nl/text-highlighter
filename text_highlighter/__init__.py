@@ -47,8 +47,8 @@ else:
 def text_highlighter(
     text: str = "Hello world!",
     selected_label: Optional[str] = None,
-    annotations: List[Dict[str, Any]] = None,
-    labels: Union[str, List[str], List[Tuple[str, str]]] = None,
+    annotations: List[Dict[str, Any]] = [],
+    labels: Union[str, List[str], List[Tuple[str, str]]] = [("PERSON", "blue"), ("ORG", "green")],
     colors: Optional[List[str]] = None,
     key: Optional[str] = None,
     show_label_selector: bool = True,
@@ -76,8 +76,6 @@ def text_highlighter(
         Whether to show the label selector
     """
     labels = [labels] if isinstance(labels, str) else labels
-    annotations = [] if annotations is None else annotations
-    labels = [("PERSON", "blue"), ("ORG", "green")] if labels is None else labels
     # If labels is a list of tuples, then the colors argument must not be set
     if isinstance(labels, list) and len(labels) > 0 and isinstance(labels[0], tuple):
         assert colors is None, "Colors must not be set if labels is a list of tuples"
