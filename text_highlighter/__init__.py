@@ -48,7 +48,10 @@ def text_highlighter(
     text: str = "Hello world!",
     selected_label: Optional[str] = None,
     annotations: List[Dict[str, Any]] = [],
-    labels: Union[str, List[str], List[Tuple[str, str]]] = [("PERSON", "blue"), ("ORG", "green")],
+    labels: Union[str, List[str], List[Tuple[str, str]]] = [
+        ("PERSON", "blue"),
+        ("ORG", "green"),
+    ],
     colors: Optional[List[str]] = None,
     key: Optional[str] = None,
     show_label_selector: bool = True,
