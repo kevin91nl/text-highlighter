@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="text-highlighter",
-    version="0.0.7",
+    version="0.0.9",
     author="K.M.J. Jacobs",
     author_email="mail@kevinjacobs.nl",
     description="Streamlit component for text highlighting",

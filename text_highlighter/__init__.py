@@ -1,6 +1,6 @@
 import os
 import streamlit.components.v1 as components
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Tuple
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
 # the component, and True when we're ready to package and distribute it.
@@ -47,33 +47,41 @@ else:
 def text_highlighter(
     text: str = "Hello world!",
     selected_label: Optional[str] = None,
-    annotations: List[Dict[str, Any]] = [],
-    labels: Union[str, List[str]] = ["PERSON", "ORG"],
+    annotations: List[Dict[str, Any]] = None,
+    labels: Union[str, List[str], List[Tuple[str, str]]] = None,
     colors: Optional[List[str]] = None,
     key: Optional[str] = None,
     show_label_selector: bool = True,
 ):
-    """Create a new instance of "text_highlighter".
+    """A text highlighter component.
 
     Parameters
     ----------
-    name: str
-        The name of the thing we're saying hello to. The component will display
-        the text "Hello, {name}!"
-    key: str or None
-        An optional key that uniquely identifies this component. If this is
-        None, and the component's arguments are changed, the component will
-        be re-mounted in the Streamlit frontend and lose its current state.
-
-    Returns
-    -------
-    int
-        The number of times the component's "Click Me" button has been clicked.
-        (This is the value passed to `Streamlit.setComponentValue` on the
-        frontend.)
-
+    text : str
+        The text to highlight
+    selected_label : str
+        The label to highlight
+    annotations : List[Dict[str, Any]]
+        The annotations to highlight
+    labels : Union[str, List[str], List[Tuple[str, str]]
+        The labels to select from which can be either:
+        - A list of strings (either color name or hex color)
+        - A single string if there is only one label
+        - A list of tuples of (label, color) if there are multiple labels (e.g. [("PERSON", "red"), ("ORG", "blue")])
+    colors : Optional[List[str]]
+        The colors to use for the labels
+    key : Optional[str]
+        A unique key to use for the component
+    show_label_selector : bool
+        Whether to show the label selector
     """
     labels = [labels] if isinstance(labels, str) else labels
+    annotations = [] if annotations is None else annotations
+    labels = [("PERSON", "blue"), ("ORG", "green")] if labels is None else labels
+    # If labels is a list of tuples, then the colors argument must not be set
+    if isinstance(labels, list) and len(labels) > 0 and isinstance(labels[0], tuple):
+        assert colors is None, "Colors must not be set if labels is a list of tuples"
+        labels, colors = zip(*labels)
     if selected_label is None:
         selected_label = labels[0]
     if colors is not None:
