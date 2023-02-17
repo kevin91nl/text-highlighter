@@ -89,6 +89,8 @@ class MyComponent extends StreamlitComponentBase<BaseState> {
   private mergeAnnotations = (annotations: any[]) => {
     // Remove all annotations which are a subannotation of another annotation;
     // which means that annotation2.start >= annotation1.start and annotation2.end <= annotation1.end
+    // Remove any annotations with start NaN or end NaN
+    annotations = annotations.filter((annotation: any) => !isNaN(annotation.start) && !isNaN(annotation.end));
     for (const annotation1 of annotations) {
       var isOverlapping = false;
       let otherAnnotation = null;
@@ -103,7 +105,7 @@ class MyComponent extends StreamlitComponentBase<BaseState> {
       if (isOverlapping) {
         const newAnnotations = [];
         for (const annotation3 of annotations) {
-          if (annotation3.start !== annotation1.start && annotation3.end !== annotation1.end && annotation3.start !== otherAnnotation.start && annotation3.end !== otherAnnotation.end) {
+          if (annotation3.start !== annotation1.start && annotation3.end !== annotation1.end && annotation3.start !== otherAnnotation?.start && annotation3.end !== otherAnnotation?.end) {
             newAnnotations.push(annotation3);
           }
         }
