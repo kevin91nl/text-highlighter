@@ -14,7 +14,7 @@ result = text_highlighter(
 )
 
 # Show the results (in XML format)
-st.write(result.to_xml())
+st.code(result.to_xml())
 
 # Show the results (as a list)
 st.write(result)
