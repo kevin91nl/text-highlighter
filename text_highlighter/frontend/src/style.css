@@ -1,0 +1,52 @@
+/* Structure: <mark>Annotated text <span>TAG</span></mark> */
+/* Now, the span is displayed right from the annotated text */
+/* Display the tag below the annotated text (centered and having the same width) */
+mark {
+    display: inline-block;
+    position: relative;
+    padding: 0 !important;
+    color: inherit;
+    line-height: 1 !important;
+}
+
+mark span {
+    position: absolute;
+    top: 100%;
+    left: -6px;
+    background-color: inherit;
+    padding: 0;
+    font-size: 6px !important;
+    height: 6px !important;
+    line-height: 6px !important;
+    width: 100%;
+    text-align: center;
+}
+
+.label-pill {
+    display: inline-block;
+    border-radius: 10rem;
+    margin-right: 0.5rem;
+    margin-bottom: 5px;
+    font-size: 0.6rem;
+    padding: 0.3rem 1.5rem;
+    min-width: 100px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid #ccc;
+}
+
+.label-pill, mark span {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+.label-pill.deselected {
+    opacity: 0.5;
+    border: 0;
+}
+
+.label-selector {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+}

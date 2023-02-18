@@ -1,6 +1,6 @@
 import os
 import streamlit.components.v1 as components
-from typing import List, Dict, Any, Optional, Union, Tuple
+from typing import List, Dict, Any, Optional, Tuple
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
 # the component, and True when we're ready to package and distribute it.
@@ -45,14 +45,10 @@ else:
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
 def text_highlighter(
-    text: str = "Hello world!",
+    text: str,
+    labels: List[Tuple[Any, Any]],
     selected_label: Optional[str] = None,
-    annotations: List[Dict[str, Any]] = [],
-    labels: Union[str, List[str], List[Tuple[str, str]]] = [
-        ("PERSON", "blue"),
-        ("ORG", "green"),
-    ],
-    colors: Optional[List[str]] = None,
+    annotations: Optional[List[Dict[Any, Any]]] = None,
     key: Optional[str] = None,
     show_label_selector: bool = True,
 ):
@@ -61,45 +57,37 @@ def text_highlighter(
     Parameters
     ----------
     text : str
-        The text to highlight
-    selected_label : str
-        The label to highlight
-    annotations : List[Dict[str, Any]]
+        The text to be annotated
+    labels : List[Tuple[Any, Any]]]
+        A list of tuples (label, color) (e.g. [("PERSON", "red"), ("ORG", "#0000FF")])
+    selected_label : Optional[str]
+        The label to highlight (default: this first label)
+    annotations : Optional[List[Dict[Any, Any]]]
         The annotations to highlight
-    labels : Union[str, List[str], List[Tuple[str, str]]
-        The labels to select from which can be either:
-        - A list of strings (either color name or hex color)
-        - A single string if there is only one label
-        - A list of tuples of (label, color) if there are multiple labels (e.g. [("PERSON", "red"), ("ORG", "blue")])
-    colors : Optional[List[str]]
-        The colors to use for the labels
     key : Optional[str]
         A unique key to use for the component
     show_label_selector : bool
         Whether to show the label selector
+
+    Examples
+    --------
+    >>> import streamlit as st
+    >>> import text_highlighter
+    >>> text = "Hello world!"
+    >>> labels = [("PERSON", "red"), ("LOCATION", "#0000FF")]
+    >>> annotations = [
+    ...     {"start": 7, "end": 11, "label": "LOCATION"},
+    ... ]
+    >>> text_highlighter.text_highlighter(text, labels, annotations=annotations)
     """
-    labels = [labels] if isinstance(labels, str) else labels
-    # If labels is a list of tuples, then the colors argument must not be set
-    if isinstance(labels, list) and len(labels) > 0 and isinstance(labels[0], tuple):
-        assert colors is None, "Colors must not be set if labels is a list of tuples"
-        labels, colors = zip(*labels)
-    if selected_label is None:
-        selected_label = labels[0]
-    if colors is not None:
-        assert len(colors) == len(labels), "Colors and labels must be the same length"
-    else:
-        all_colors = [
-            "red",
-            "green",
-            "blue",
-            "yellow",
-            "orange",
-            "purple",
-            "pink",
-            "cyan",
-            "gray",
-        ]
-        colors = [all_colors[i % len(all_colors)] for i in range(len(labels))]
+    annotations = [] if annotations is None else annotations
+    label_names = [item[0] for item in labels]
+    colors = [item[1] for item in labels]
+    annotations = [
+        {**annotation, "color": colors[label_names.index(annotation["tag"])]}
+        for annotation in annotations
+    ]
+    selected_label = label_names[0] if selected_label is None else selected_label
     # Call through to our private component function. Arguments we pass here
     # will be sent to the frontend, where they'll be available in an "args"
     # dictionary.
@@ -110,16 +98,60 @@ def text_highlighter(
         text=text,
         annotations=annotations,
         colors=colors,
-        labels=labels,
+        labels=label_names,
         key=key,
         default=annotations,
         selected_label=selected_label,
         show_label_selector=show_label_selector,
     )
 
+    class ComponentResult(list):  # type: ignore
+        def __init__(self, component_value: List[Dict[Any, Any]], text: str):
+            super().__init__(component_value)
+            self.text = text
+
+        def _get_start_position(self, annotation: Dict[Any, Any]):
+            return annotation["start"]
+
+        def to_xml(self):
+            # Generate XML from the annotations
+            # which will add tags to the text
+            # First, partition the text into chunks; either annotated or not
+            chunks = []
+            start = 0
+            sorted_annotations = sorted(self, key=self._get_start_position)
+            for annotation in sorted_annotations:
+                if annotation["start"] > start:
+                    chunks.append({"text": text[start : annotation["start"]]})
+                chunks.append(
+                    {
+                        "text": text[annotation["start"] : annotation["end"]],
+                        "tag": annotation["tag"],
+                    }
+                )
+                start = annotation["end"]
+            if start < len(text):
+                chunks.append({"text": text[start:]})
+            xml = (
+                """<?xml version="1.0" encoding="UTF-8"?>\n"""
+                + "  <text>\n"
+                + "    "
+                + "".join(
+                    [
+                        f"<annotation tag=\"{chunk['tag']}\">{chunk['text']}</annotation>"
+                        if "tag" in chunk
+                        else chunk["text"]
+                        for chunk in chunks
+                    ]
+                )
+                + "\n"
+                + "  </text>"
+            )
+            return xml
+
     # We could modify the value returned from the component if we wanted.
     # There's no need to do this in our simple example - but it's an option.
-    return component_value
+    return ComponentResult(component_value, text)
 
 
 # Add some test code to play with the component while it's in development.
@@ -130,16 +162,15 @@ if not _RELEASE:
 
     st.subheader("Component with constant args")
 
-    # Create an instance of our component with a constant `name` arg, and
-    # print its output value.
-    annotations = [
-        {"start": 0, "end": 5, "text": "Hello", "tag": "ORG", "color": "red"}
-    ]
-    label = st.selectbox("Select a label", ["PERSON", "ORG"])  # type: ignore
-    annotations = text_highlighter(
-        text="Hello world! This is a demo. Second line",
-        annotations=annotations,
-        selected_label=label,
-        show_label_selector=False,
+    component = text_highlighter(
+        text="John Doe is the founder of MyComp Inc. and lives in New York with his wife Jane Doe.",
+        annotations=[
+            {"start": 0, "end": 8, "tag": "PERSON"},
+            {"start": 27, "end": 38, "tag": "ORG"},
+            {"start": 75, "end": 83, "tag": "PERSON"},
+        ],
+        labels=[("PERSON", "red"), ("ORG", "#0000FF")],
+        selected_label="ORG",
     )
-    st.write(annotations)
+    st.code(component.to_xml())
+    st.write(component)

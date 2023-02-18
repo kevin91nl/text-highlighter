@@ -6,6 +6,7 @@ import {
 import React, { ReactNode } from "react"
 import { TextAnnotator } from 'react-text-annotate'
 import { State } from 'react-powerplug'
+import "./style.css"
 
 interface BaseState {
   isFocused: boolean,
@@ -55,19 +56,22 @@ class MyComponent extends StreamlitComponentBase<BaseState> {
       <State initial={{ value: annotations, tag: selected_label }}>
         {({ state, setState }) => (
           <span>
-            {show_label_selector && <select
-              onChange={e => setState({ tag: e.target.value })}
-              value={state.tag}
-            >
-              {labels.map((label: any) => (
-                <option key={label} value={label}>
-                  {label}
-                </option>
-              ))}
-            </select>}
+            {show_label_selector && <span className="label-selector">{
+              labels.map((label: any, index: number) => (
+                  <span
+                      key={label}
+                      className={`label-pill ${state.tag === label ? 'selected' : 'deselected'}`}
+                      style={{backgroundColor: colors[index]}}
+                      onClick={() => setState({tag: label})}
+                  >
+                {label}
+                </span>
+              ))
+            }</span>}
+
             <TextAnnotator
               style={{
-                maxWidth: 500,
+                paddingBottom: '8px',
                 lineHeight: 1.5
               }}
               content={text}

@@ -38,7 +38,7 @@ show_error_codes = true
 [tool.pyright]
 pythonVersion = "3.8"
 pythonPlatform = "Linux"
-exclude = ["notebooks"]
+exclude = ["notebooks", "build"]
 executionEnvironments = [
   {"root" = "src", "pythonVersion" = "3.8"}
 ]
