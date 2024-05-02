@@ -1,6 +1,9 @@
 /* Structure: <mark>Annotated text <span>TAG</span></mark> */
 /* Now, the span is displayed right from the annotated text */
 /* Display the tag below the annotated text (centered and having the same width) */
+span {
+	white-space: pre	
+}
 mark {
     display: inline-block;
     position: relative;
