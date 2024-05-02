@@ -5,7 +5,7 @@ span {
     white-space: pre;
 }
 mark {
-    display: inline-block;
+    display: inline;
     position: relative;
     padding: 0 !important;
     color: inherit;
