@@ -47,6 +47,27 @@ The output will look like this:
 
 ![Example](img/example_v0.0.11.png)
 
+## Deployment
+
+Run the following to build the front-end:
+
+```bash
+cd text_highlighter/frontend
+npm run build
+```
+
+After that, you can build the package using the following command from the root directory:
+
+```bash
+python -m build
+```
+
+And then you can deploy it to PyPI using the following command:
+
+```bash
+twine upload dist/*
+```
+
 ## Contribute
 
 Feel free to add a pull request or open an issue if you have any questions or suggestions.
