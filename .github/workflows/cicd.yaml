@@ -24,14 +24,14 @@ jobs:
       - name: Check the code
         run: |
           make check
-      - name: Build the front-end
-        working-directory: text_highlighter/frontend
-        run: |
-          npm install
-          npm run build
-      - name: Build the package
-        run: |
-          python -m build
-      - name: Publish the package
-        run: |
-          python -m twine upload dist/*
+#      - name: Build the front-end
+#        working-directory: text_highlighter/frontend
+#        run: |
+#          npm install
+#          npm run build
+#      - name: Build the package
+#        run: |
+#          python -m build
+#      - name: Publish the package
+#        run: |
+#          python -m twine upload dist/*
