@@ -3,7 +3,8 @@ import streamlit as st
 
 # Basic usage
 result = text_highlighter(
-    text="John Doe is the founder of MyComp Inc. and lives in New York with his wife Jane Doe.",
+    text="John Doe is the founder of MyComp Inc. and lives in New York with his wife Jane Doe. The company was "
+    "founded in 2010 and has since grown to 100 employees.",
     labels=[("PERSON", "red"), ("ORG", "#0000FF")],
     # Optionally you can specify pre-existing annotations:
     annotations=[

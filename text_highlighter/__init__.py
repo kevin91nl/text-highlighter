@@ -51,6 +51,7 @@ def text_highlighter(
     annotations: Optional[List[Dict[Any, Any]]] = None,
     key: Optional[str] = None,
     show_label_selector: bool = True,
+    text_height: Optional[int] = None,
 ):
     """A text highlighter component.
 
@@ -68,6 +69,8 @@ def text_highlighter(
         A unique key to use for the component
     show_label_selector : bool
         Whether to show the label selector
+    text_height : Optional[int]
+        The height of the text area
 
     Examples
     --------
@@ -103,6 +106,7 @@ def text_highlighter(
         default=annotations,
         selected_label=selected_label,
         show_label_selector=show_label_selector,
+        text_height=text_height,
     )
 
     class ComponentResult(list):  # type: ignore
