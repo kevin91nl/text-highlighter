@@ -29,6 +29,7 @@ class MyComponent extends StreamlitComponentBase<BaseState> {
     const text = this.props.args["text"]
     const selected_label = this.props.args["selected_label"]
     const show_label_selector = this.props.args["show_label_selector"]
+    const text_height = this.props.args["text_height"]
 
     // Streamlit sends us a theme object via props that we can use to ensure
     // that our component has visuals that match the active theme in a
@@ -72,7 +73,9 @@ class MyComponent extends StreamlitComponentBase<BaseState> {
             <TextAnnotator
               style={{
                 paddingBottom: '8px',
-                lineHeight: 1.5
+                lineHeight: 1.5,
+                height: text_height + 'px',
+                overflowY: 'scroll'
               }}
               content={text}
               value={state.value}
