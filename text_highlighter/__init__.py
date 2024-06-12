@@ -70,7 +70,7 @@ def text_highlighter(
     show_label_selector : bool
         Whether to show the label selector
     text_height : Optional[int]
-        The height of the text area
+        The height of the text area in pixels
 
     Examples
     --------
